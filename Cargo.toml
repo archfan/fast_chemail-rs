@@ -1,0 +1,17 @@
+[package]
+publish = false
+name = "fastchemail"
+version = "0.7.0"
+description = "Check email address"
+
+authors = ["Jonas Me (https://gitlab.com/vulkano)"]
+#homepage = ""
+repository = "https://gitlab.com/fastchemail/fastchemail-rs"
+documentation = "https://docs.rs/fastchemail"
+
+readme = "README.md"
+keywords = ["check", "email"]
+license = "MPL-2.0"
+
+[dependencies]
+asciiutils = "^0"
