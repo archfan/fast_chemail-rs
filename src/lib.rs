@@ -24,8 +24,6 @@
 
 extern crate asciiutils;
 
-mod ffi;
 mod parser;
 
-pub use ffi::*;
 pub use parser::*;
