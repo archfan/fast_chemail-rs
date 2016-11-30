@@ -5,7 +5,7 @@
 // License, v. 2.0. If a copy of the MPL was not distributed with this
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-//! Package html_email validates the email as it is defined in the HTML specification.
+//! Package fastchemail validates the email as it is defined in the HTML specification.
 
 // #![allow(dead_code)]
 #![feature(repeat_str)]
