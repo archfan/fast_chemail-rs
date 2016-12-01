@@ -40,19 +40,11 @@ pub fn parse_email(address: &str) -> Result<(), Error> {
     // or ASCII "control characters" (decimal value 0-31 and 127).
     asciiutils::check_ascii(address)?;
 
-    let parts: Vec<&str> = address.split('@').collect();
-    if parts.len() != 2 { // `.chars().count()`: to use with non-ASCII characters
-        if parts.len() > 2 {
-            return Err(Error::TooAt);
-        }
-        return Err(Error::NoSignAt);
-    }
-
-    if parts[0].len() > MAX_LOCAL_PART {
-        return Err(Error::LocalTooLong);
-    }
-    if parts[1].len() > MAX_DOMAIN_PART {
-        return Err(Error::DomainTooLong);
+    let mut address_iter = address.split('@');
+    let local = address_iter.next().unwrap();
+    let domain = address_iter.next().ok_or(Error::NoSignAt)?;
+    if address_iter.next().is_some() {
+        return Err(Error::TooAt);
     }
 
     // == Local part
@@ -62,23 +54,26 @@ pub fn parse_email(address: &str) -> Result<(), Error> {
     // Period (".") may also appear, but may not be used to start or end
     // the local part, nor may two or more consecutive periods appear.
 
-    if parts[0].starts_with('.') {
+    if local.len() > MAX_LOCAL_PART {
+        return Err(Error::LocalTooLong);
+    }
+    if local.starts_with('.') {
         return Err(Error::LocalStartPeriod);
     }
-    if parts[0].ends_with('.') {
+    if local.ends_with('.') {
         return Err(Error::LocalEndPeriod);
     }
 
     let mut last_period: bool = false;
-    for char in parts[0].chars() {
-        if asciiutils::Check::is_letter(char) || asciiutils::Check::is_digit(char) {
+    for ch in local.chars() {
+        if asciiutils::Check::is_letter(ch) || asciiutils::Check::is_digit(ch) {
             if last_period {
                 last_period = false;
             }
             continue;
         }
 
-        match char {
+        match ch {
             // atom :: https://tools.ietf.org/html/rfc5322#section-3.2.3
             '!' | '#' | '$' | '%' | '&' | '\'' | '*' | '+' | '-' | '/' | '=' | '?' | '^' |
             '_' | '`' | '{' | '|' | '}' | '~' => {
@@ -92,7 +87,7 @@ pub fn parse_email(address: &str) -> Result<(), Error> {
                 }
                 last_period = true;
             }
-            _ => return Err(Error::WrongCharLocal(char)),
+            _ => return Err(Error::WrongCharLocal(ch)),
         }
     }
 
@@ -119,14 +114,17 @@ pub fn parse_email(address: &str) -> Result<(), Error> {
     // to determine domain name validity, rather than trying to maintain a local
     // list of valid TLD names.
 
-    if parts[1].starts_with('.') {
+    if domain.len() > MAX_DOMAIN_PART {
+        return Err(Error::DomainTooLong);
+    }
+    if domain.starts_with('.') {
         return Err(Error::DomainStartPeriod);
     }
-    if parts[1].ends_with('.') {
+    if domain.ends_with('.') {
         return Err(Error::DomainEndPeriod);
     }
 
-    let labels: Vec<&str> = parts[1].split('.').collect();
+    let labels: Vec<&str> = domain.split('.').collect();
     if labels.len() == 1 {
         return Err(Error::NoPeriodDomain);
     }
@@ -139,12 +137,10 @@ pub fn parse_email(address: &str) -> Result<(), Error> {
             return Err(Error::LabelTooLong);
         }
 
-        for char in label.chars() {
-            if asciiutils::Check::is_letter(char) || asciiutils::Check::is_digit(char) ||
-               char == '-' {
-                continue;
-            }
-            return Err(Error::WrongCharDomain(char));
+        if let Some(ch) = label.chars().find(|&x| {
+            !asciiutils::Check::is_letter(x) && !asciiutils::Check::is_digit(x) && x != '-'
+        }) {
+            return Err(Error::WrongCharDomain(ch));
         }
 
         let label_bytes = label.as_bytes();
