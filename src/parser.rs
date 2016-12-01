@@ -21,10 +21,7 @@ const MAX_LABEL: usize = 63;
 
 /// valid_email checks wheter an email address is valid.
 pub fn valid_email(address: &str) -> bool {
-    match parse_email(address) {
-        Ok(_) => true,
-        Err(_) => false,
-    }
+    parse_email(address).is_ok()
 }
 
 /// parse_email scans an email address to check wheter it is correct.
@@ -41,13 +38,10 @@ pub fn parse_email(address: &str) -> Result<(), Error> {
     // Systems MUST NOT define mailboxes in such a way as to require the use in
     // SMTP of non-ASCII characters (octets with the high order bit set to one)
     // or ASCII "control characters" (decimal value 0-31 and 127).
-    match asciiutils::check_ascii(address) {
-        Ok(_) => (),
-        Err(e) => return Err(Error::NoAscii(e)),
-    }
+    asciiutils::check_ascii(address)?;
 
     let parts: Vec<&str> = address.split('@').collect();
-    if parts.len() != 2 { // .chars().count() => to use with non-ASCII characters
+    if parts.len() != 2 { // `.chars().count()`: to use with non-ASCII characters
         if parts.len() > 2 {
             return Err(Error::TooAt);
         }
