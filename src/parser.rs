@@ -19,12 +19,12 @@ const MAX_LOCAL_PART: usize = 64;
 const MAX_DOMAIN_PART: usize = 255;
 const MAX_LABEL: usize = 63;
 
-/// valid_email checks wheter an email address is valid.
+/// `valid_email` checks wheter an email address is valid.
 pub fn valid_email(address: &str) -> bool {
     parse_email(address).is_ok()
 }
 
-/// parse_email scans an email address to check wheter it is correct.
+/// `parse_email` scans an email address to check wheter it is correct.
 pub fn parse_email(address: &str) -> Result<(), Error> {
     if address.starts_with('@') {
         return Err(Error::NoLocalPart);
@@ -132,7 +132,7 @@ pub fn parse_email(address: &str) -> Result<(), Error> {
     }
 
     for label in labels {
-        if label.len() == 0 {
+        if label.is_empty() {
             return Err(Error::ConsecutivePeriod);
         }
         if label.len() > MAX_LABEL {
@@ -255,17 +255,17 @@ fn test_length() {
     let all_labels = format!("{}", label.repeat(3));
     let last_label = "y".repeat(MAX_DOMAIN_PART - all_labels.len());
 
-    let inputOk = format!("{}@{}{}", local_part, all_labels, last_label);
-    assert_eq!(parse_email(&inputOk), Ok(()));
+    let input_ok = format!("{}@{}{}", local_part, all_labels, last_label);
+    assert_eq!(parse_email(&input_ok), Ok(()));
 
     // == Errors
 
-    let mut inputErr = format!("a{}@{}{}", local_part, all_labels, last_label);
-    assert_eq!(parse_email(&inputErr), Err(Error::LocalTooLong));
+    let mut input_err = format!("a{}@{}{}", local_part, all_labels, last_label);
+    assert_eq!(parse_email(&input_err), Err(Error::LocalTooLong));
 
-    inputErr = format!("{}@{}{}z", local_part, all_labels, last_label);
-    assert_eq!(parse_email(&inputErr), Err(Error::DomainTooLong));
+    input_err = format!("{}@{}{}z", local_part, all_labels, last_label);
+    assert_eq!(parse_email(&input_err), Err(Error::DomainTooLong));
 
-    inputErr = format!("{}@{}x{}", local_part, label, last_label);
-    assert_eq!(parse_email(&inputErr), Err(Error::LabelTooLong));
+    input_err = format!("{}@{}x{}", local_part, label, last_label);
+    assert_eq!(parse_email(&input_err), Err(Error::LabelTooLong));
 }

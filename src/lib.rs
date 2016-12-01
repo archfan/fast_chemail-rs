@@ -7,8 +7,7 @@
 
 //! Package fastchemail validates the email as it is defined in the HTML specification.
 
-// #![allow(dead_code)]
-#![feature(repeat_str)]
+#![cfg_attr(test, feature(repeat_str))]
 
 // missing_docs,
 // unstable_features,
