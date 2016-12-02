@@ -30,7 +30,7 @@ fn parse_email() {
 }
 
 #[test]
-fn valid_email() {
-    assert_eq!(fastchemail::valid_email(&table::TESTS_OK[0]), true);
-    assert_eq!(fastchemail::valid_email(&table::TESTS_ERROR[0].0), false);
+fn is_valid_email() {
+    assert_eq!(fastchemail::is_valid_email(&table::TESTS_OK[0]), true);
+    assert_eq!(fastchemail::is_valid_email(&table::TESTS_ERROR[0].0), false);
 }

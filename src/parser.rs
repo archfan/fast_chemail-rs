@@ -19,8 +19,8 @@ const MAX_LOCAL_PART: usize = 64;
 const MAX_DOMAIN_PART: usize = 255;
 const MAX_LABEL: usize = 63;
 
-/// `valid_email` checks wheter an email address is valid.
-pub fn valid_email(address: &str) -> bool {
+/// `is_valid_email` checks wheter an email address is valid.
+pub fn is_valid_email(address: &str) -> bool {
     parse_email(address).is_ok()
 }
 
