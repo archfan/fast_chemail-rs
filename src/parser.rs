@@ -25,12 +25,12 @@ pub fn is_valid_email(address: &str) -> bool {
 }
 
 /// `parse_email` scans an email address to check wheter it is correct.
-pub fn parse_email(address: &str) -> Result<(), Error> {
+pub fn parse_email(address: &str) -> Result<(), EmailError> {
     if address.starts_with('@') {
-        return Err(Error::NoLocalPart);
+        return Err(EmailError::NoLocalPart);
     }
     if address.ends_with('@') {
-        return Err(Error::NoDomainPart);
+        return Err(EmailError::NoDomainPart);
     }
 
     // https://tools.ietf.org/html/rfc5321#section-4.1.2
@@ -42,9 +42,9 @@ pub fn parse_email(address: &str) -> Result<(), Error> {
 
     let mut address_iter = address.split('@');
     let local = address_iter.next().unwrap();
-    let domain = address_iter.next().ok_or(Error::NoSignAt)?;
+    let domain = address_iter.next().ok_or(EmailError::NoSignAt)?;
     if address_iter.next().is_some() {
-        return Err(Error::TooAt);
+        return Err(EmailError::TooAt);
     }
 
     // == Local part
@@ -55,13 +55,13 @@ pub fn parse_email(address: &str) -> Result<(), Error> {
     // the local part, nor may two or more consecutive periods appear.
 
     if local.len() > MAX_LOCAL_PART {
-        return Err(Error::LocalTooLong);
+        return Err(EmailError::LocalTooLong);
     }
     if local.starts_with('.') {
-        return Err(Error::LocalStartPeriod);
+        return Err(EmailError::LocalStartPeriod);
     }
     if local.ends_with('.') {
-        return Err(Error::LocalEndPeriod);
+        return Err(EmailError::LocalEndPeriod);
     }
 
     let mut last_period: bool = false;
@@ -83,11 +83,11 @@ pub fn parse_email(address: &str) -> Result<(), Error> {
             }
             '.' => {
                 if last_period {
-                    return Err(Error::ConsecutivePeriod);
+                    return Err(EmailError::ConsecutivePeriod);
                 }
                 last_period = true;
             }
-            _ => return Err(Error::WrongCharLocal(ch)),
+            _ => return Err(EmailError::WrongCharLocal(ch)),
         }
     }
 
@@ -115,42 +115,42 @@ pub fn parse_email(address: &str) -> Result<(), Error> {
     // list of valid TLD names.
 
     if domain.len() > MAX_DOMAIN_PART {
-        return Err(Error::DomainTooLong);
+        return Err(EmailError::DomainTooLong);
     }
     if domain.starts_with('.') {
-        return Err(Error::DomainStartPeriod);
+        return Err(EmailError::DomainStartPeriod);
     }
     if domain.ends_with('.') {
-        return Err(Error::DomainEndPeriod);
+        return Err(EmailError::DomainEndPeriod);
     }
 
     let labels: Vec<&str> = domain.split('.').collect();
     if labels.len() == 1 {
-        return Err(Error::NoPeriodDomain);
+        return Err(EmailError::NoPeriodDomain);
     }
 
     for label in labels {
         if label.is_empty() {
-            return Err(Error::ConsecutivePeriod);
+            return Err(EmailError::ConsecutivePeriod);
         }
         if label.len() > MAX_LABEL {
-            return Err(Error::LabelTooLong);
+            return Err(EmailError::LabelTooLong);
         }
 
         if let Some(ch) = label.chars().find(|&x| {
             !asciiutils::Check::is_letter(x) && !asciiutils::Check::is_digit(x) && x != '-'
         }) {
-            return Err(Error::WrongCharDomain(ch));
+            return Err(EmailError::WrongCharDomain(ch));
         }
 
         let label_bytes = label.as_bytes();
 
         if !asciiutils::Check::is_letter(label_bytes[0]) {
-            return Err(Error::WrongStartLabel(label_bytes[0] as char));
+            return Err(EmailError::WrongStartLabel(label_bytes[0] as char));
         }
         let last_char = label_bytes[label_bytes.len() - 1];
         if !asciiutils::Check::is_letter(last_char) && !asciiutils::Check::is_digit(last_char) {
-            return Err(Error::WrongEndLabel(last_char as char));
+            return Err(EmailError::WrongEndLabel(last_char as char));
         }
     }
 
@@ -161,7 +161,7 @@ pub fn parse_email(address: &str) -> Result<(), Error> {
 //
 
 #[derive(Debug, PartialEq, Eq)]
-pub enum Error {
+pub enum EmailError {
     NoLocalPart,
     NoDomainPart,
     NoSignAt,
@@ -185,58 +185,66 @@ pub enum Error {
     WrongEndLabel(char),
 }
 
-impl error::Error for Error {
+impl error::Error for EmailError {
     fn description(&self) -> &str {
         match *self {
-            Error::NoLocalPart => "no local part",
-            Error::NoDomainPart => "no domain part",
-            Error::NoSignAt => "no at sign (@)",
+            EmailError::NoLocalPart => "no local part",
+            EmailError::NoDomainPart => "no domain part",
+            EmailError::NoSignAt => "no at sign (@)",
 
-            Error::TooAt => "wrong number of at sign (@)",
-            Error::LocalTooLong => "the local part has more than 64 character",
-            Error::DomainTooLong => "the domain part has more than 255 characters",
-            Error::LabelTooLong => "a domain label has more than 63 characters",
+            EmailError::TooAt => "wrong number of at sign (@)",
+            EmailError::LocalTooLong => "the local part has more than 64 character",
+            EmailError::DomainTooLong => "the domain part has more than 255 characters",
+            EmailError::LabelTooLong => "a domain label has more than 63 characters",
 
-            Error::LocalStartPeriod => "the local part starts with a period",
-            Error::LocalEndPeriod => "the local part ends with a period",
-            Error::DomainStartPeriod => "the domain part starts with a period",
-            Error::DomainEndPeriod => "the domain part ends with a period",
-            Error::ConsecutivePeriod => "appear two or more consecutive periods",
-            Error::NoPeriodDomain => "no period at domain part",
+            EmailError::LocalStartPeriod => "the local part starts with a period",
+            EmailError::LocalEndPeriod => "the local part ends with a period",
+            EmailError::DomainStartPeriod => "the domain part starts with a period",
+            EmailError::DomainEndPeriod => "the domain part ends with a period",
+            EmailError::ConsecutivePeriod => "appear two or more consecutive periods",
+            EmailError::NoPeriodDomain => "no period at domain part",
 
-            Error::Ascii(ref err) => err.description(),
-            Error::WrongCharLocal(_) => "character not valid in local part",
-            Error::WrongCharDomain(_) => "character not valid in domain part",
-            Error::WrongStartLabel(_) => "character not valid at start of domain label",
-            Error::WrongEndLabel(_) => "character not valid at end of domain label",
+            EmailError::Ascii(ref err) => err.description(),
+            EmailError::WrongCharLocal(_) => "character not valid in local part",
+            EmailError::WrongCharDomain(_) => "character not valid in domain part",
+            EmailError::WrongStartLabel(_) => "character not valid at start of domain label",
+            EmailError::WrongEndLabel(_) => "character not valid at end of domain label",
         }
     }
 
     fn cause(&self) -> Option<&error::Error> {
         match *self {
-            Error::Ascii(ref err) => Some(err),
+            EmailError::Ascii(ref err) => Some(err),
             _ => None,
         }
     }
 }
 
 const MSG_ERR: &'static str = "invalid email address";
-impl fmt::Display for Error {
+impl fmt::Display for EmailError {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         match *self {
-            Error::WrongCharLocal(ch) => write!(f, "{}: {} ({})", MSG_ERR, self.description(), ch),
-            Error::WrongCharDomain(ch) => write!(f, "{}: {} ({})", MSG_ERR, self.description(), ch),
-            Error::WrongStartLabel(ch) => write!(f, "{}: {} ({})", MSG_ERR, self.description(), ch),
-            Error::WrongEndLabel(ch) => write!(f, "{}: {} ({})", MSG_ERR, self.description(), ch),
+            EmailError::WrongCharLocal(ch) => {
+                write!(f, "{}: {} ({})", MSG_ERR, self.description(), ch)
+            }
+            EmailError::WrongCharDomain(ch) => {
+                write!(f, "{}: {} ({})", MSG_ERR, self.description(), ch)
+            }
+            EmailError::WrongStartLabel(ch) => {
+                write!(f, "{}: {} ({})", MSG_ERR, self.description(), ch)
+            }
+            EmailError::WrongEndLabel(ch) => {
+                write!(f, "{}: {} ({})", MSG_ERR, self.description(), ch)
+            }
 
             _ => write!(f, "{}: {}", MSG_ERR, self.description()),
         }
     }
 }
 
-impl From<asciiutils::AsciiError> for Error {
-    fn from(err: asciiutils::AsciiError) -> Error {
-        Error::Ascii(err)
+impl From<asciiutils::AsciiError> for EmailError {
+    fn from(err: asciiutils::AsciiError) -> EmailError {
+        EmailError::Ascii(err)
     }
 }
 
@@ -257,11 +265,11 @@ fn test_length() {
     // == Errors
 
     let mut input_err = format!("a{}@{}{}", local_part, all_labels, last_label);
-    assert_eq!(parse_email(&input_err), Err(Error::LocalTooLong));
+    assert_eq!(parse_email(&input_err), Err(EmailError::LocalTooLong));
 
     input_err = format!("{}@{}{}z", local_part, all_labels, last_label);
-    assert_eq!(parse_email(&input_err), Err(Error::DomainTooLong));
+    assert_eq!(parse_email(&input_err), Err(EmailError::DomainTooLong));
 
     input_err = format!("{}@{}x{}", local_part, label, last_label);
-    assert_eq!(parse_email(&input_err), Err(Error::LabelTooLong));
+    assert_eq!(parse_email(&input_err), Err(EmailError::LabelTooLong));
 }
