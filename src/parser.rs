@@ -38,7 +38,7 @@ pub fn parse_email(address: &str) -> Result<(), Error> {
     // Systems MUST NOT define mailboxes in such a way as to require the use in
     // SMTP of non-ASCII characters (octets with the high order bit set to one)
     // or ASCII "control characters" (decimal value 0-31 and 127).
-    asciiutils::check_ascii(address)?;
+    asciiutils::check_ascii_printable(address)?;
 
     let mut address_iter = address.split('@');
     let local = address_iter.next().unwrap();
@@ -178,7 +178,7 @@ pub enum Error {
     ConsecutivePeriod,
     NoPeriodDomain,
 
-    NoAscii(asciiutils::AsciiError),
+    Ascii(asciiutils::AsciiError),
     WrongCharLocal(char),
     WrongCharDomain(char),
     WrongStartLabel(char),
@@ -204,7 +204,7 @@ impl error::Error for Error {
             Error::ConsecutivePeriod => "appear two or more consecutive periods",
             Error::NoPeriodDomain => "no period at domain part",
 
-            Error::NoAscii(ref err) => err.description(),
+            Error::Ascii(ref err) => err.description(),
             Error::WrongCharLocal(_) => "character not valid in local part",
             Error::WrongCharDomain(_) => "character not valid in domain part",
             Error::WrongStartLabel(_) => "character not valid at start of domain label",
@@ -214,7 +214,7 @@ impl error::Error for Error {
 
     fn cause(&self) -> Option<&error::Error> {
         match *self {
-            Error::NoAscii(ref err) => Some(err),
+            Error::Ascii(ref err) => Some(err),
             _ => None,
         }
     }
@@ -236,7 +236,7 @@ impl fmt::Display for Error {
 
 impl From<asciiutils::AsciiError> for Error {
     fn from(err: asciiutils::AsciiError) -> Error {
-        Error::NoAscii(err)
+        Error::Ascii(err)
     }
 }
 

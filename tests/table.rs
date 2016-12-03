@@ -27,7 +27,7 @@ pub static TESTS_OK: [&'static str; 16] = ["!#$%&'*+-/=?^_`{|}~@example.com",
                                            "abc@c--n.com",
                                            "abc@xn--hxajbheg2az3al.xn--jxalpdlp"];
 
-pub static TESTS_ERROR: [(&'static str, Error); 27] =
+pub static TESTS_ERROR: [(&'static str, Error); 29] =
     [("@", Error::NoLocalPart),
      ("@example.com", Error::NoLocalPart),
      ("abc@", Error::NoDomainPart),
@@ -53,5 +53,7 @@ pub static TESTS_ERROR: [(&'static str, Error); 27] =
      ("abc@x.y-.z", Error::WrongEndLabel('-')),
      ("abc@1example.com", Error::WrongStartLabel('1')),
      ("abc@x.123", Error::WrongStartLabel('1')),
-     ("abcd€f@example.com", Error::NoAscii(asciiutils::AsciiError { ch: '€' })),
-     ("abc@exámple.com", Error::NoAscii(asciiutils::AsciiError { ch: 'á' }))];
+     ("abcd€f@example.com", Error::Ascii(asciiutils::AsciiError::NonAscii('€'))),
+     ("abc@exámple.com", Error::Ascii(asciiutils::AsciiError::NonAscii('á'))),
+     ("a\tbc@example.com", Error::Ascii(asciiutils::AsciiError::ControlChar(2))),
+     ("abc@\texample.com", Error::Ascii(asciiutils::AsciiError::ControlChar(5)))];
