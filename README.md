@@ -9,13 +9,10 @@ Also, has been considered the bounds defined in:
 
 - [SMTP :: Size Limits and Minimums](https://tools.ietf.org/html/rfc5321#section-4.5.3.1)
 
-    > To the maximum extent possible, implementation techniques that impose no
-    > limits on the length of these objects should be used.
-    >
-    > 1. The maximum total length of a user name or other local-part is 64 octets.
-    > 2. The maximum total length of a domain name or number is 255 octets.
-    > 3. The maximum total length of a reverse-path or forward-path is 256 octets
-    >    (including the punctuation and element separators).
+    > - The maximum total length of a user name or other local-part is 64 octets.
+    > - The maximum total length of a domain name or number is 255 octets.
+    > - The maximum total length of a reverse-path or forward-path is 256 octets
+    >   (including the punctuation and element separators).
 
     There is a great contradiction. The maximum total length of an email address
     is 320 octects:
@@ -27,9 +24,9 @@ Also, has been considered the bounds defined in:
     contain a display name, like `first last <local@domain>` and will often
     extend 320 octets.
 
-    Now well, since the standard says: "to the maximum extent possible,
+    Now well, since the standard says: "*to the maximum extent possible,
     implementation techniques that impose no limits on the length of these
-    objects should be used", the bound to reverse-path or forward-path will not
+    objects should be used*", the bound to reverse-path or forward-path will not
     be taken.
 
 - [Application Techniques for Checking and Transformation of Names](https://tools.ietf.org/html/rfc3696#section-3)
