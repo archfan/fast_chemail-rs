@@ -193,7 +193,7 @@ impl error::Error for EmailError {
             EmailError::NoSignAt => "no at sign (@)",
 
             EmailError::TooAt => "wrong number of at sign (@)",
-            EmailError::LocalTooLong => "the local part has more than 64 character",
+            EmailError::LocalTooLong => "the local part has more than 64 characters",
             EmailError::DomainTooLong => "the domain part has more than 255 characters",
             EmailError::LabelTooLong => "a domain label has more than 63 characters",
 
