@@ -48,23 +48,23 @@ Add to your 'Cargo.toml' file:
 
 ```toml
 [dependencies]
-fastchemail = "^0"
+fast_chemail = "^0"
 ```
 
 and to your crate root:
 
 ```rust
-extern crate fastchemail;
+extern crate fast_chemail;
 ```
 
 ## Usage
 
-Read the [documentation](https://docs.rs/fastchemail).
+Read the [documentation](https://docs.rs/fast_chemail).
 
 ## Contribute
 
 The canonical source of this repository is hosted on
-[GitLab](https://gitlab.com/fastchemail/fastchemail-rs).
+[GitLab](https://gitlab.com/fast_chemail/fast_chemail-rs).
 Please make your issues there.
 
 The pull requests are not accepted without filling an issue, to know wheter

@@ -5,7 +5,7 @@
 // License, v. 2.0. If a copy of the MPL was not distributed with this
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-extern crate fastchemail;
+extern crate fast_chemail;
 
 mod table;
 
@@ -15,14 +15,14 @@ fn parse_email() {
     for x in &table::TESTS_OK {
         idx += 1;
         // println!("{}", idx);
-        assert_eq!(fastchemail::parse_email(x), Ok(())) ;
+        assert_eq!(fast_chemail::parse_email(x), Ok(())) ;
     }
 
     idx = 0;
     for x in &table::TESTS_ERROR[..] {
         idx += 1;
         // println!("{}", idx);
-        match fastchemail::parse_email(x.0) {
+        match fast_chemail::parse_email(x.0) {
             Err(e) => assert_eq!(e, x.1),
             Ok(_) => panic!("[{}] `{}` want error `{:?}`", idx, x.0, x.1),
         }
@@ -31,6 +31,6 @@ fn parse_email() {
 
 #[test]
 fn is_valid_email() {
-    assert_eq!(fastchemail::is_valid_email(&table::TESTS_OK[0]), true);
-    assert_eq!(fastchemail::is_valid_email(&table::TESTS_ERROR[0].0), false);
+    assert_eq!(fast_chemail::is_valid_email(&table::TESTS_OK[0]), true);
+    assert_eq!(fast_chemail::is_valid_email(&table::TESTS_ERROR[0].0), false);
 }

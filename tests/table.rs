@@ -6,9 +6,9 @@
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 extern crate asciiutils;
-extern crate fastchemail;
+extern crate fast_chemail;
 
-use fastchemail::ParseError;
+use fast_chemail::ParseError;
 
 pub static TESTS_OK: [&'static str; 16] = ["!#$%&'*+-/=?^_`{|}~@example.com",
                                            "user+mailbox@example.com",
