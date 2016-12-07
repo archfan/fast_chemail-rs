@@ -1,16 +1,16 @@
 [package]
-name = "fastchemail"
+name = "fast_chemail"
 version = "0.9.3"
 description = "Check email address"
 
 authors = ["Jonas Me (https://gitlab.com/vulkano)"]
 #homepage = ""
-repository = "https://gitlab.com/fastchemail/fastchemail-rs"
-documentation = "https://docs.rs/fastchemail"
+repository = "https://gitlab.com/fast_chemail/fast_chemail-rs"
+documentation = "https://docs.rs/fast_chemail"
 
 readme = "README.md"
 keywords = ["check", "email"]
 license = "MPL-2.0"
 
 [dependencies]
-asciiutils = "^0"
+ascii_utils = "^0"

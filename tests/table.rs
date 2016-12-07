@@ -5,7 +5,7 @@
 // License, v. 2.0. If a copy of the MPL was not distributed with this
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-extern crate asciiutils;
+extern crate ascii_utils;
 extern crate fast_chemail;
 
 use fast_chemail::ParseError;
@@ -53,7 +53,7 @@ pub static TESTS_ERROR: [(&'static str, ParseError); 29] =
      ("abc@x.y-.z", ParseError::WrongEndLabel('-')),
      ("abc@1example.com", ParseError::WrongStartLabel('1')),
      ("abc@x.123", ParseError::WrongStartLabel('1')),
-     ("abcd€f@example.com", ParseError::Ascii(asciiutils::AsciiError::NonAscii('€'))),
-     ("abc@exámple.com", ParseError::Ascii(asciiutils::AsciiError::NonAscii('á'))),
-     ("a\tbc@example.com", ParseError::Ascii(asciiutils::AsciiError::ControlChar(2))),
-     ("abc@\texample.com", ParseError::Ascii(asciiutils::AsciiError::ControlChar(5)))];
+     ("abcd€f@example.com", ParseError::Ascii(ascii_utils::AsciiError::NonAscii('€'))),
+     ("abc@exámple.com", ParseError::Ascii(ascii_utils::AsciiError::NonAscii('á'))),
+     ("a\tbc@example.com", ParseError::Ascii(ascii_utils::AsciiError::ControlChar(2))),
+     ("abc@\texample.com", ParseError::Ascii(ascii_utils::AsciiError::ControlChar(5)))];

@@ -21,7 +21,7 @@
     unused_qualifications
 )]
 
-extern crate asciiutils;
+extern crate ascii_utils;
 
 mod parser;
 

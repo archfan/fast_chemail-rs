@@ -9,7 +9,7 @@ use std::error;
 use std::error::Error as ErrorT;
 use std::fmt;
 
-use asciiutils;
+use ascii_utils;
 
 // https://tools.ietf.org/html/rfc5321#section-4.5.3.1
 //
@@ -38,7 +38,7 @@ pub fn parse_email(address: &str) -> Result<(), ParseError> {
     // Systems MUST NOT define mailboxes in such a way as to require the use in
     // SMTP of non-ASCII characters (octets with the high order bit set to one)
     // or ASCII "control characters" (decimal value 0-31 and 127).
-    asciiutils::check_ascii_printable(address)?;
+    ascii_utils::check_ascii_printable(address)?;
 
     let mut address_iter = address.split('@');
     let local = address_iter.next().unwrap();
@@ -66,7 +66,7 @@ pub fn parse_email(address: &str) -> Result<(), ParseError> {
 
     let mut last_period: bool = false;
     for ch in local.chars() {
-        if asciiutils::Check::is_letter(ch) || asciiutils::Check::is_digit(ch) {
+        if ascii_utils::Check::is_letter(ch) || ascii_utils::Check::is_digit(ch) {
             if last_period {
                 last_period = false;
             }
@@ -138,18 +138,18 @@ pub fn parse_email(address: &str) -> Result<(), ParseError> {
         }
 
         if let Some(ch) = label.chars().find(|&x| {
-            !asciiutils::Check::is_letter(x) && !asciiutils::Check::is_digit(x) && x != '-'
+            !ascii_utils::Check::is_letter(x) && !ascii_utils::Check::is_digit(x) && x != '-'
         }) {
             return Err(ParseError::WrongCharDomain(ch));
         }
 
         let label_bytes = label.as_bytes();
 
-        if !asciiutils::Check::is_letter(label_bytes[0]) {
+        if !ascii_utils::Check::is_letter(label_bytes[0]) {
             return Err(ParseError::WrongStartLabel(label_bytes[0] as char));
         }
         let last_char = label_bytes[label_bytes.len() - 1];
-        if !asciiutils::Check::is_letter(last_char) && !asciiutils::Check::is_digit(last_char) {
+        if !ascii_utils::Check::is_letter(last_char) && !ascii_utils::Check::is_digit(last_char) {
             return Err(ParseError::WrongEndLabel(last_char as char));
         }
     }
@@ -178,15 +178,15 @@ pub enum ParseError {
     ConsecutivePeriod,
     NoPeriodDomain,
 
-    Ascii(asciiutils::AsciiError),
+    Ascii(ascii_utils::AsciiError),
     WrongCharLocal(char),
     WrongCharDomain(char),
     WrongStartLabel(char),
     WrongEndLabel(char),
 }
 
-impl From<asciiutils::AsciiError> for ParseError {
-    fn from(err: asciiutils::AsciiError) -> ParseError {
+impl From<ascii_utils::AsciiError> for ParseError {
+    fn from(err: ascii_utils::AsciiError) -> ParseError {
         ParseError::Ascii(err)
     }
 }
