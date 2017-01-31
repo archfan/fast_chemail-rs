@@ -7,7 +7,7 @@
 
 //! Package fast_chemail validates the email as it is defined in the HTML specification.
 
-#![cfg_attr(test, feature(repeat_str))]
+//#![cfg_attr(test, feature(repeat_str))]
 
 // missing_docs,
 // unstable_features,
@@ -23,6 +23,8 @@
 
 extern crate ascii_utils;
 
+mod errors;
 mod parser;
 
+pub use errors::*;
 pub use parser::*;
