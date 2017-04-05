@@ -7,16 +7,14 @@
 
 //! Package fast_chemail validates the email as it is defined in the HTML specification.
 
-//#![cfg_attr(test, feature(repeat_str))]
-
 // missing_docs,
-// unstable_features,
 #![deny(
     missing_copy_implementations,
     missing_debug_implementations,
     trivial_casts,
     trivial_numeric_casts,
     unsafe_code,
+    unstable_features,
     unused_import_braces,
     unused_qualifications
 )]

@@ -67,8 +67,8 @@ The canonical source of this repository is hosted on
 [GitLab](https://gitlab.com/fast_chemail/fast_chemail-rs).
 Please make your issues there.
 
-The pull requests are not accepted without filling an issue, to know wheter
-what you want to change, it seems to me right for this project.
+The pull requests are not accepted without filling an issue, to know wheter the
+changes seem to me right for the project.
 
 **Note:** this is a free/open source project at *zero price* built in my spare
 time, and it is possible that I have not time to solve any issue.

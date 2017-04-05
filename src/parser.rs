@@ -158,7 +158,7 @@ pub fn parse_email(address: &str) -> Result<(), ParseError> {
 // == Tests
 //
 
-/*#[test]
+#[test]
 fn test_length() {
     let local_part = "a".repeat(MAX_LOCAL_PART);
 
@@ -179,4 +179,4 @@ fn test_length() {
 
     input_err = format!("{}@{}x{}", local_part, label, last_label);
     assert_eq!(parse_email(&input_err), Err(ParseError::LabelTooLong));
-}*/
+}

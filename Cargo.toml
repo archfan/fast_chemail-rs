@@ -1,6 +1,6 @@
 [package]
 name = "fast_chemail"
-version = "0.9.4"
+version = "0.9.5"
 description = "Check email address"
 
 authors = ["Jonas Me (https://gitlab.com/vulkano)"]
