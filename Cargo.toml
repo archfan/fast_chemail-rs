@@ -1,10 +1,10 @@
 [package]
 name = "fast_chemail"
-version = "0.9.5"
+version = "0.9.6"
 description = "Check email address"
 
-authors = ["Jonas Me (https://gitlab.com/vulkano)"]
-repository = "https://gitlab.com/fast_chemail/fast_chemail-rs"
+authors = ["Jonas (https://dukannst.nix)"]
+repository = "https://github.com/archfan/fast_chemail-rs.git"
 documentation = "https://docs.rs/fast_chemail"
 
 readme = "README.md"
