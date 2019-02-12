@@ -143,7 +143,7 @@ pub fn parse_email(address: &str) -> Result<(), ParseError> {
 
         let label_bytes = label.as_bytes();
 
-        if !ascii_utils::Check::is_letter(label_bytes[0]) || !ascii_utils::Check::is_digit(label_bytes[0]) {
+        if !ascii_utils::Check::is_letter(label_bytes[0]) && !ascii_utils::Check::is_digit(label_bytes[0]) {
             return Err(ParseError::WrongStartLabel(label_bytes[0] as char));
         }
         let last_char = label_bytes[label_bytes.len() - 1];
